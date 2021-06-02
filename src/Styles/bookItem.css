@@ -1,0 +1,27 @@
+.book-list__item:hover{
+    background-color: rgb(223, 223, 223);
+}
+
+.book-item{
+    padding: 8px;
+    padding-left: 5px;
+    height: 71px;
+    display: grid;
+    grid-template-columns: 1fr 10fr;
+    justify-content: center;
+    align-items: center;
+}
+.book-item__text{
+    padding-left: 5px;
+}
+
+.book-item__author{
+    font-size: 12px;
+    color: gray;
+}
+img{
+    /* max-width: 100%;
+    max-height: 55px;
+    object-fit: none;*/
+    margin: 0 auto;
+}

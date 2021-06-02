@@ -16,29 +16,33 @@ module.exports = {
         new CleanWebpackPlugin()
     ],
     resolve: {
-        extensions: [".ts", ".tsx", ".js"]
+        extensions: [".ts", ".tsx", ".js", ".jsx"]
     },
     module: {
         rules: [
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
-                use: {
-                    loader: "babel-loader"
-                },
+                loader: "babel-loader",
+                options: {
+                    presets: ['@babel/preset-env']
+                }
+            },
+            {
+                test: /\.(ts|tsx)$/,
+                exclude: /node_modules/,
+                loader: "ts-loader",
             },
             {
                 test: /\.css$/,
                 use: ["style-loader", "css-loader"]
             },
             {
-                test: /\.(jpeg|jpg|png|svg)/,
-                use: ["file-loader"]
-            },
-            {
-                test: /\.tsx?$/,
-                use: "ts-loader",
-                exclude: /node_modules/,
+                test: /\.(jpeg|jpg|png|svg)$/,
+                loader: "file-loader",
+                options: {
+                    name: '[name].[ext]',
+                }
             }
         ]
     }

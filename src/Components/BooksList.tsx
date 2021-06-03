@@ -1,20 +1,31 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import { BookItemType, getSearchBookList } from '../API/api'
+import { getSearchBookList } from '../API/api'
+import { searchActions } from '../redux/searchReducer'
+import { getLongBookList, getPageNumber, getSearchTerm } from '../redux/selectors'
 import { BookItem } from './BookItem'
 
 export const BooksList = () => {
-    const [booksList, setBooksList] = useState<BookItemType[]>([])
-    let {pageNumber, query}: {pageNumber: string, query: string} = useParams()
+    const bookList = useSelector(getLongBookList)
+    const searchTerm = useSelector(getSearchTerm)
+    const pageNumber = useSelector(getPageNumber)
+    const dispatch = useDispatch()
+    const {page, query}: {page: string, query: string} = useParams()
     const getBooks = async () => {
-        let data = await getSearchBookList(query, +pageNumber)
-        setBooksList(data)
+        let data = await getSearchBookList(searchTerm, pageNumber)
+        dispatch(searchActions.setLongBookList(data))
     }
     useEffect(() => {
+        dispatch(searchActions.setQueryTerm(query))
+        dispatch(searchActions.setPageNumber(+page))
+    }, [query, page])
+    useEffect(() => {
         getBooks()
-    }, [query])
-    if (booksList.length === 0) return <div>Loading...</div>
+    }, [searchTerm])
+
+    if (bookList.length === 0) return <div>Loading...</div>
     return <div>
-        {booksList.map(book => (<BookItem key={book.key} book={book} />))}
+        {bookList.map(book => (<BookItem key={book.key} book={book} />))}
     </div>
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 import { BookItemType } from '../API/api'
-import '../Styles/bookItem.css'
-import bookIcon from '../Assets/img/avatar_book-sm.png'
+import '../styles/bookItem.css'
+import bookIcon from '../assets/img/avatar_book-sm.png'
 
 export const BookItem: React.FC<PropsType> = ({ book }) => {
     return (

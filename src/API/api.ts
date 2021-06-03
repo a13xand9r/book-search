@@ -9,8 +9,8 @@ export const getShortSearchBookList = async (query: string): Promise<BookItemTyp
     return data.docs
 }
 export const getSearchBookList = async (query: string, page: number): Promise<BookItemType[]> => {
-    // const queryWithPluses = query.split(' ').join('+')
-    const res = await fetch(`http://openlibrary.org/search.json?q=${query}&page=${page}&limit=${ITEMS_COUNT_LONG_SEARCH}`)
+    const queryWithPluses = query.split(' ').join('+')
+    const res = await fetch(`http://openlibrary.org/search.json?q=${queryWithPluses}&page=${page}&limit=${ITEMS_COUNT_LONG_SEARCH}`)
     const data = await res.json()
     return data.docs
 }

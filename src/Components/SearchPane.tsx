@@ -1,40 +1,45 @@
 import React, { FormEvent, useEffect, useRef, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
 import { getShortSearchBookList, BookItemType } from '../API/api'
-import './../Styles/searchPane.css'
+import { searchActions } from '../redux/searchReducer'
+import { getSearchTerm, getShortBookList } from '../redux/selectors'
+import './../styles/searchPane.css'
 import { BookItem } from './BookItem'
 
 export const SearchPane = () => {
     const history = useHistory()
     const [search, setSearch] = useState('')
-    const [booksList, setBooksList] = useState<BookItemType[]>([])
     const [showShortList, setShowShortList] = useState(false)
+    const dispatch = useDispatch()
+    const bookList = useSelector(getShortBookList)
+    const searchTerm = useSelector(getSearchTerm)
     const inputRef = useRef(null)
     let timeout: ReturnType<typeof setTimeout>
     const pushQueryString = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         clearTimeout(timeout)
         const queryWithPluses = search.split(' ').join('+')
-        history.push(`/search=${queryWithPluses}/page=1`)
+        if (search) history.push(`/search=${queryWithPluses}/page=1`)
+        else history.push(`/`)
     }
     const onBlurHandler = () => setShowShortList(false)
     const onFocusHandler = () => setShowShortList(true)
-    const {_, query}: {_: string, query: string} = useParams()
     useEffect(() => {
         if (search) {
             timeout = setTimeout(async () => {
-                if (document.activeElement === inputRef.current) setShowShortList(true)
-                let data = await getShortSearchBookList(search)
-                setBooksList(data)
+                document.activeElement === inputRef.current && setShowShortList(true)
+                const data = await getShortSearchBookList(search)
+                dispatch(searchActions.setShortBookList(data))
             }, 1000)
-        } else setBooksList([])
+        } else dispatch(searchActions.setShortBookList([]))
         return () => {
             clearTimeout(timeout)
         }
     }, [search])
     useEffect(() => {
-        if (query) setSearch(query)
-    }, [])
+        searchTerm && setSearch(searchTerm)
+    }, [searchTerm])
     return <>
         <form className='app__form search' onSubmit={pushQueryString}>
             <div className='search__input-pane'>
@@ -44,8 +49,8 @@ export const SearchPane = () => {
                     onBlur={onBlurHandler}
                     onFocus={onFocusHandler}
                     onChange={e => setSearch(e.target.value)} />
-                {(!!booksList.length && showShortList) && <div className='search__list book-list'>
-                    {booksList.map(book => (<BookItem key={book.key} book={book} />))}
+                {(!!bookList.length && showShortList) && <div className='search__list book-list'>
+                    {bookList.map(book => (<BookItem key={book.key} book={book} />))}
                 </div>}
             </div>
             <input type='submit' value='Поиск' className='search__submit' />

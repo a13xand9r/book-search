@@ -6,10 +6,12 @@ module.exports = {
     entry: path.join(__dirname, "src", "index.tsx"),
     output: {
         path: path.resolve(__dirname, "dist"),
-        filename: "[name].[hash].js"
+        filename: "[name].[hash].js",
+        publicPath: '/'
     },
     devServer: {
-        port: 3000
+        port: 3000,
+        historyApiFallback: true
     },
     plugins: [
         new HTMLWebpackPlugin({ template: path.join(__dirname, "src", "index.html") }),

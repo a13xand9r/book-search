@@ -1,44 +1,23 @@
-import React, { FormEvent, useEffect, useState } from 'react'
-import { getShortSearchBookList, BookItemType, getSearchBookList } from '../API/api'
+import React from 'react'
 import './../Styles/app.css'
-import { BookItem } from './BookItem'
+import { Route, BrowserRouter as Router } from 'react-router-dom'
+import { SearchPane } from './SearchPane'
+import { BooksList } from './BooksList'
 
 export const App = () => {
-    const [search, setSearch] = useState('')
-    const [booksList, setBooksList] = useState<BookItemType[]>([])
-    let timeout: ReturnType<typeof setTimeout>
-    const onSearch = async (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
-        clearTimeout(timeout)
-        let data = await getSearchBookList(search, 1)
-        setBooksList(data)
-    }
-    useEffect(() => {
-        if (search) {
-            timeout = setTimeout(async () => {
-                let data = await getShortSearchBookList(search)
-                setBooksList(data)
-            }, 1000)
-        } else setBooksList([])
-        return () => {
-            clearTimeout(timeout)
-        }
-    }, [search])
-    console.log(booksList)
-    return <>
-        <form className='app__form search' onSubmit={onSearch}>
-            <div className='search__input-pane'>
-                <input type='text' className='search__input'
-                    value={search}
-                    onChange={e => setSearch(e.target.value)} />
-                {!!booksList.length && <div className='search__list book-list'>
-                    {booksList.map((book, i) => (<BookItem key={book.key} book={book} />))}
-                </div>}
-            </div>
-            <input type='submit' value='Поиск' className='search__submit' />
-        </form>
-    </>
+    return (
+        <Router>
+            <Route path="/search=:query/page=:pageNumber" >
+                <SearchPane />
+                <BooksList />
+            </Route>
+            <Route path="/" exact >
+                <SearchPane />
+            </Route>
+        </Router>
+    )
 }
+
 
 type Styles = {
     [key: string]: string

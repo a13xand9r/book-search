@@ -5,11 +5,14 @@
 .book-item{
     padding: 8px;
     padding-left: 5px;
-    height: 71px;
+    min-height: 70px;
+    max-width: 700px;
     display: grid;
-    grid-template-columns: 1fr 10fr;
-    justify-content: center;
+    grid-template-columns: 1fr 7fr;
     align-items: center;
+}
+.book-tem__cover{
+    width: 100%
 }
 .book-item__text{
     padding-left: 5px;
@@ -20,8 +23,5 @@
     color: gray;
 }
 img{
-    /* max-width: 100%;
-    max-height: 55px;
-    object-fit: none;*/
     margin: 0 auto;
 }
